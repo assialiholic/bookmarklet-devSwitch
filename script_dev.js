@@ -1,8 +1,11 @@
 javascript:
-  function test() {
+  function switchServer() {
 
-    //ここに本サーバーURL:devサーバーURLの形で追加していく
-    var urlPairs = {
+    /*
+      定義箇所
+      ここに本サーバーURL:devサーバーURLの形で追加していく
+    */
+      var urlPairs = {
         'www.example.com': 'www-v.example.com',
         'lorem.com': 'lorem-v.com'
       },
@@ -12,7 +15,7 @@ javascript:
       genUrl,
       key;
 
-    //mergedDevUrl,mergedGenUrlにそれぞれのURLを配列として突っ込む
+    //devUrlArray,genUrlArrayにそれぞれのURLを配列として突っ込む
     for (key in urlPairs) {
       if (urlPairs.hasOwnProperty(key)) {
         devUrlArray.push(urlPairs[key]);
@@ -25,37 +28,36 @@ javascript:
     genUrl = genUrlArray.toString().replace(pipeReg, '|', 'g');
     //if(url.match)で使用する正規表現オブジェクトの作成
     var devUrlReg = new RegExp(devUrl),
-        genUrlReg = new RegExp(genUrl);
-    alert(devUrl);
+      genUrlReg = new RegExp(genUrl);
 
+    /*
+      遷移処理
+    */
     var url = location.href,
-      targetUrl,
-      matchTxt,
-      replaceTxt;
+        currentUrl,
+        targetUrl;
 
     if (url.match(devUrlReg)) {
-      matchTxt = url.match(devUrlReg);
-      //replaceTxtにmatchTxtと対になる本サーバーのパスを代入
+      currentUrl = url.match(devUrlReg);
+      //targetUrlにcurrentUrlと対になる本サーバーのパスを代入
       for (key in urlPairs) {
         if (urlPairs.hasOwnProperty(key)) {
-          if (matchTxt == urlPairs[key]){
-            replaceTxt = key;
+          if (currentUrl == urlPairs[key]) {
+            targetUrl = key;
           }
         }
       }
-      targetUrl = url.replace(devUrlReg, replaceTxt);
-      window.open(targetUrl);
+      window.open(url.replace(currentUrl, targetUrl));
     } else {
-      matchTxt = url.match(genUrlReg);
-      //replaceTxtにmatchTxtと対になるdevサーバーのパスを代入
+      currentUrl = url.match(genUrlReg);
+      //targetUrlにcurrentUrlと対になるdevサーバーのパスを代入
       for (key in urlPairs) {
         if (urlPairs.hasOwnProperty(key)) {
-          if (matchTxt == key){
-            replaceTxt = urlPairs[key];
+          if (currentUrl == key) {
+            targetUrl = urlPairs[key];
           }
         }
       }
-      targetUrl = url.replace(matchTxt, replaceTxt);
-      window.open(targetUrl);
+      window.open(url.replace(currentUrl, targetUrl));
     }
   }
